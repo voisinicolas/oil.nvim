@@ -307,7 +307,7 @@ function SSHConnection:_consume()
         -- This was causing issues when ls directory that doesn't exist (b/c ls prints error)
         'echo "===BEGIN==="; '
           .. cmd.cmd
-          .. '; CODE=$?; sleep .01; echo "===DONE($CODE)==="\r'
+          .. '; CODE=$?; sleep 0; echo "===DONE($CODE)==="\r'
       )
     end
   end
