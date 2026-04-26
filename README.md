@@ -379,6 +379,7 @@ These are plugins maintained by other authors that extend the functionality of o
 
 - [oil-git-status.nvim](https://github.com/refractalize/oil-git-status.nvim) - Shows git status of files in statuscolumn
 - [oil-git.nvim](https://github.com/benomahony/oil-git.nvim) - Shows git status of files with colour and symbols
+- [oil-git.nvim](https://github.com/malewicz1337/oil-git.nvim) - Async git status integration with directory support
 - [oil-lsp-diagnostics.nvim](https://github.com/JezerM/oil-lsp-diagnostics.nvim) - Shows LSP diagnostics indicator as virtual text
 
 ## API
@@ -394,7 +395,7 @@ These are plugins maintained by other authors that extend the functionality of o
 - [toggle_hidden()](doc/api.md#toggle_hidden)
 - [get_current_dir(bufnr)](doc/api.md#get_current_dirbufnr)
 - [open_float(dir, opts, cb)](doc/api.md#open_floatdir-opts-cb)
-- [toggle_float(dir)](doc/api.md#toggle_floatdir)
+- [toggle_float(dir, opts, cb)](doc/api.md#toggle_floatdir-opts-cb)
 - [open(dir, opts, cb)](doc/api.md#opendir-opts-cb)
 - [close(opts)](doc/api.md#closeopts)
 - [open_preview(opts, callback)](doc/api.md#open_previewopts-callback)

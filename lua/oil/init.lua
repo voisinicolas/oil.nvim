@@ -342,11 +342,16 @@ end
 
 ---Open oil browser in a floating window, or close it if open
 ---@param dir nil|string When nil, open the parent of the current buffer, or the cwd if current buffer is not a file
-M.toggle_float = function(dir)
+---@param opts? oil.OpenOpts
+---@param cb? fun() Called after the oil buffer is ready
+M.toggle_float = function(dir, opts, cb)
   if vim.w.is_oil_win then
     M.close()
+    if cb then
+      cb()
+    end
   else
-    M.open_float(dir)
+    M.open_float(dir, opts, cb)
   end
 end
 
@@ -808,9 +813,6 @@ local function maybe_hijack_directory_buffer(bufnr)
   local config = require("oil.config")
   local fs = require("oil.fs")
   local util = require("oil.util")
-  if not config.default_file_explorer then
-    return false
-  end
   local bufname = vim.api.nvim_buf_get_name(bufnr)
   if bufname == "" then
     return false
@@ -1392,15 +1394,7 @@ M.setup = function(opts)
       vim.w.oil_original_alternate = vim.w[parent_win].oil_original_alternate
     end,
   })
-  vim.api.nvim_create_autocmd("BufAdd", {
-    desc = "Detect directory buffer and open oil file browser",
-    group = aug,
-    pattern = "*",
-    nested = true,
-    callback = function(params)
-      maybe_hijack_directory_buffer(params.buf)
-    end,
-  })
+
   -- mksession doesn't save oil buffers in a useful way. We have to manually load them after a
   -- session finishes loading. See https://github.com/stevearc/oil.nvim/issues/29
   vim.api.nvim_create_autocmd("SessionLoadPost", {
@@ -1419,11 +1413,23 @@ M.setup = function(opts)
     end,
   })
 
-  local bufnr = vim.api.nvim_get_current_buf()
-  if maybe_hijack_directory_buffer(bufnr) and vim.v.vim_did_enter == 1 then
-    -- manually call load on a hijacked directory buffer if vim has already entered
-    -- (the BufReadCmd will not trigger)
-    M.load_oil_buffer(bufnr)
+  if config.default_file_explorer then
+    vim.api.nvim_create_autocmd("BufAdd", {
+      desc = "Detect directory buffer and open oil file browser",
+      group = aug,
+      pattern = "*",
+      nested = true,
+      callback = function(params)
+        maybe_hijack_directory_buffer(params.buf)
+      end,
+    })
+
+    local bufnr = vim.api.nvim_get_current_buf()
+    if maybe_hijack_directory_buffer(bufnr) and vim.v.vim_did_enter == 1 then
+      -- manually call load on a hijacked directory buffer if vim has already entered
+      -- (the BufReadCmd will not trigger)
+      M.load_oil_buffer(bufnr)
+    end
   end
 end
 
